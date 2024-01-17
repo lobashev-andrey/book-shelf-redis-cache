@@ -15,3 +15,19 @@ spring:
       schema: app_schema
       connection-timeout: 10000
       connection-init-sql: CREATE SCHEMA IF NOT EXISTS app_schema;
+
+
+app:
+  redis:
+    enable: true
+  cache:
+    cacheNames:
+      - "allByCategoryName"
+      - "oneByTitleAndAuthor"
+    caches:
+      allByCategoryName:
+        lifeTime: 12m
+      oneByTitleAndAuthor:
+        lifeTime: 12m
+    cache-type: "redis"
+

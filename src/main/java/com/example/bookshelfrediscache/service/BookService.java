@@ -7,9 +7,7 @@ import com.example.bookshelfrediscache.repository.BookRepository;
 import com.example.bookshelfrediscache.util.BeanUtils;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.annotation.*;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -17,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+//@CacheConfig()
 public class BookService {
 
     private final BookRepository repository;
@@ -38,7 +37,7 @@ public class BookService {
                 new EntityNotFoundException(MessageFormat.format("Книга {0} автора {1} не найдена", title, author))));
     }
 
-    @Cacheable("oneById")
+
     public Book findById(Long id){
         return repository.findById(id).orElseThrow((() ->
                 new EntityNotFoundException(MessageFormat.format("Книга с ID {0} не найдена", id))));
@@ -46,7 +45,7 @@ public class BookService {
 
 
 
-    @CacheEvict(value = {"allByCategoryName", "oneByTitleAndAuthor", "oneById"}, allEntries = true)
+    @CacheEvict(value = {"allByCategoryName", "oneByTitleAndAuthor"}, allEntries = true)
     public Book create(Book book){
         Book createdBook = new Book();
 
@@ -59,7 +58,7 @@ public class BookService {
         return repository.save(createdBook);
     }
 
-    @CacheEvict(value = {"allByCategoryName", "oneByTitleAndAuthor", "oneById"}, allEntries = true)
+    @CacheEvict(value = {"allByCategoryName", "oneByTitleAndAuthor"}, allEntries = true)
     public Book update(Book book){
         Book updatedBook = findById(book.getId());
 
@@ -68,10 +67,9 @@ public class BookService {
         return repository.save(updatedBook);
     }
 
-    @CacheEvict(value = {"allByCategoryName", "oneByTitleAndAuthor", "oneById"}, allEntries = true)
+    @CacheEvict(value = {"allByCategoryName", "oneByTitleAndAuthor"}, allEntries = true)
     public void deleteById(Long id){
 
         repository.delete(findById(id));
     }
 }
-
